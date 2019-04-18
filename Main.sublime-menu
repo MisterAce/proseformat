@@ -1,0 +1,39 @@
+[
+    {
+        "caption": "Preferences",
+        "mnemonic": "n",
+        "id": "preferences",
+        "children":
+        [
+            {
+                "caption": "Package Settings",
+                "mnemonic": "P",
+                "id": "package-settings",
+                "children":
+                [
+                    {
+                        "caption": "ProseFormat",
+                        "children":
+                        [
+                            {
+                                "caption": "Settings – Default",
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/ProseFormat/ProseFormat.sublime-settings",
+                                },
+                            },
+                            {
+                                "caption": "Settings – User",
+                                "command": "open_file",
+                                "args": {
+                                    "file": "${packages}/User/ProseFormat.sublime-settings",
+                                },
+                            }
+
+                        ]                            
+                    }
+                ]
+            }
+        ]
+    }
+]

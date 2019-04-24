@@ -121,7 +121,7 @@ In order to vary the width, open the ProseFormat user settings (Menu: Preference
 
 ## Paragraphs
 
-ProseFormat formats each paragraph separately. It tries to fit as many words in a particular line, possibly hoisting words from subsequent lines of a paragraph. Paragraphs are separated by an empty line. Thus, your source text should already be separated into paragraphs. The first line of a paragraph defines the indent all paragraph lines will have after formatting.
+ProseFormat formats each paragraph separately. It tries to fit as many words in a particular line not exceeding the width, possibly hoisting words from subsequent lines of a paragraph. Paragraphs are separated by an empty line. Thus, your source text should already be separated into paragraphs. The first line of a paragraph defines the indent all paragraph lines will have after formatting.
 
 ## Bulleted Lists
 

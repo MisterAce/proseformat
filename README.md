@@ -10,7 +10,7 @@ ProseFormat is a Sublime Text plugin that allows hard wrapping of prose text usi
 
 ## Example
 
-The following example shows what ProseFormat can do for you. After editing, your prose text may look fuzzy like this:
+The following example shows what ProseFormat can do for you. After editing, your prose text may look as fuzzy as this:
 
 ```
 Prose Paragraphs

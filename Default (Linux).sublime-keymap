@@ -1,0 +1,27 @@
+[
+{ 
+    "keys": ["ctrl+alt+f", "b"],
+    "command": "prose_format",
+    "args": { "justify": 3 }
+},
+{
+    "keys": ["ctrl+alt+f", "l"],
+    "command": "prose_format",
+    "args": { "justify": 0 }    
+},
+{
+    "keys": ["ctrl+alt+f", "r"],
+    "command": "prose_format",
+    "args": { "justify": 1 }    
+},
+{
+    "keys": ["ctrl+alt+f", "c"],
+    "command": "prose_format",
+    "args": { "justify": 2 }    
+},
+{
+    "keys": ["ctrl+alt+f", "w"],
+    "command": "prose_format",
+    "args": { "change_width": 2 }
+},
+]

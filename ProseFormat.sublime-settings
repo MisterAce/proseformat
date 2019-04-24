@@ -1,19 +1,25 @@
 {
+    // --- User settings ---
+
     // The width of the target text
     "width": 70
 
     // First line indent of a paragraph. TODO: Make this idenopotent
     ,"paragraph_indent": 0
 
-    // Justification. Left: 0, Right: 1, Center: 2,  Block: 3
-    ,"justify": 3
-
-    // Re-wrap. TODO. Special mode, do not collect words and paragraphs
-    // just work on each line separately
-    ,"single_line_mode": false
-
     // Renumber numbered lists automatically?
     ,"renumber_lists": true
+
+    // --- Expert settings ---
+
+    // A regexp defining the separator of paragraphs
+    ,"paragraphSeparator": "\\n\\s*\\n"
+
+    // A regexp describing| the supported list bullets
+    ,"bullets": "^\\*\\ |^\\-\\ |^o\\ "
+
+    // A regexp describing a numbered list
+    ,"listNumber": "^[0-9]+[.)]\\s+"
 
     // Tracing
     ,"traceOn": false

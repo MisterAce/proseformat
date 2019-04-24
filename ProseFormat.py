@@ -12,9 +12,6 @@
 # - Don't remove Empty New-Lines at the Beginning or the End
 #   of selection
 # - Single-Line Mode
-# - Configurable Bullets
-# - Configurable Numbers
-# - Integration und Keyboard Shortcuts
 # - Idempotent first_line indent
 # - Block-Characters Editor?
 # - Überschriften Erkennung?
@@ -29,41 +26,20 @@ import re
 # Configuration
 # ----------------------------------------------
 
-# The width of the target text
-width = 70
-
-# First line indent of a paragraph. TODO: Make this idenopotent
-paragraph_indent = 0
-
-# Justification. Left: 0, Right: 1, Center: 2,  Block: 3
-justify = 3
-
-# Re-wrap. TODO. Special mode, do not collect words and paragraphs
-# just work on each line separately
-single_line_mode = False
-
-# Renumber numbered lists automatically?
-renumber_lists = True
-
-# Supported bullets
-# bullets = "^" + re.escape("- ")return val.startswith("- ") or val.startswith("* ") or val.startswith("o ")
-
-# Tracing
-traceOn = False
+settings = ""
 
 # ----------------------------------------------
 # Main entry
 # ----------------------------------------------
 class ProseFormatCommand(sublime_plugin.TextCommand):
     def run(self, edit, **args):
-        global justify
-
+ 
         load_settings()        
 
         # Get the configuration from the args
-        # TODO: Move this to parse_args method
         if "justify" in args:
-            justify = args["justify"]
+            justification = args["justify"]
+        width = settings.get("width")
 
         # Get the current selection and expand it to full lines
         if len(self.view.sel()[0]) == 0:
@@ -75,14 +51,11 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
         # Get the currently selected text
         org_text = self.view.substr(sel_region)
 
-        # Remove whitespaces from empty lines
-        org_text = re.sub("\n\s+\n", "\n\n", org_text);
-
         # The result string
         formatted_text = ""
 
         # Iterate over each paragraph        
-        paragraphs = org_text.split("\n\n")
+        paragraphs = re.split(settings.get("paragraphSeparator"), org_text)
         first_paragraph = True
         numbered_list_started = False
         numbered_list_counter = 1
@@ -94,8 +67,6 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
                 formatted_text += "\n"
             else:
                 first_paragraph = False
-
-            trace("<P>")
 
             # Toggle the numbered list flag
             if not starts_with_number(stripped_paragraph):
@@ -148,7 +119,7 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
                     if justify == 2:
                         line = line.center(width)
 
-                    formatted_text += format_line(line, False) + "\n"
+                    formatted_text += format_line(line, justification, width, False) + "\n"
                     line = ""
                     first_line = False;
 
@@ -163,28 +134,27 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
 
             # Print the "tail" line
             if len(line) > 0:
-                formatted_text += format_line(line, True) + "\n"
+                formatted_text += format_line(line, justification, width, True) + "\n"
 
         # Alter buffer, omit last \n as it wasn't included in the region
         self.view.replace(edit, sel_region, formatted_text[:-1])
+
 
 # ----------------------------------------------
 # Format a line according to the justification 
 # settings
 # ----------------------------------------------
-def format_line(line, is_last):
-    trace("Formatting line: " + line)
-    if justify == 1:
+def format_line(line, justification, width, is_last):
+    if justification == 1:
         line = line.rjust(width)
-    elif justify == 2:
+    elif justification == 2:
         # TODO: This is rather a special case which should simply
         # center the selection line-by-line as is without word
         # wrapping
         line = line.center(width)
-    elif justify == 3:
+    elif justification == 3:
         if is_last:
             return line
-        trace("Line to format: " + line)
         start_index = len(line) - len(line.lstrip())
         if starts_with_bullet(line.strip()):
             start_index += 2
@@ -202,19 +172,22 @@ def format_line(line, is_last):
             current_index = space_pos + 2
     return line
 
+
 # ----------------------------------------------
 # Returns True when a string starts witha list
 # bullet.
 # ----------------------------------------------
 def starts_with_bullet(val):
-    return val.startswith("- ") or val.startswith("* ") or val.startswith("o ")
+    return re.match(settings.get("bullets"), val) != None
+
 
 # ----------------------------------------------
 # Returns True when a string starts with a list
 # number
 # ----------------------------------------------
 def starts_with_number(val):
-    return re.match("^[0-9]+[.)]\s+", val) != None
+    return re.match(settings.get("listNumber"), val) != None
+
 
 # ----------------------------------------------
 # Returns the length of the number of a list
@@ -226,14 +199,16 @@ def num_len(val):
     else:
         return -1
 
+
 # ----------------------------------------------
 # Replace a trailing number by a different one
 # ----------------------------------------------
 def replace_num(val, counter):
     return re.sub("^[0-9]+", str(counter), val)
 
+
 # ----------------------------------------------
-# Returns the value of the bulleted list number
+# Returns the value of the list number
 # ----------------------------------------------
 def num_val(val):
     match = re.match("^[0-9]+", val)
@@ -242,18 +217,20 @@ def num_val(val):
     else:
         return -1    
 
+
 # ----------------------------------------------
 # Reload settings from settings file
-# TODO: Use all settings!
 # ----------------------------------------------
 def load_settings():
-        global width
+        global settings
         settings = sublime.load_settings("ProseFormat.sublime-settings") 
-        width = settings.get("width")
+       
 
-# Trace something to a string when traceOn flag is turned on
-# TODO: Get rid of the return stuff...
+# ----------------------------------------------
+# Trace something to a string when traceOn flag 
+# is turned on
+# ----------------------------------------------
 def trace(msg):
-    if traceOn:
+    if settings.get("traceOn"):
         print(msg)
     

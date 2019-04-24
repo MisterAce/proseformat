@@ -5,16 +5,17 @@
 #            - Word wrap paragraphs
 #            - Support list formatting
 #            - Support different kinds of justification
-# Author:   A. Schösser
+# Author:   MisterAce
 # Date:     2019-17-04
 #
 # TODO List
-# - Don't remove Empty New-Lines at the Beginning or the End
-#   of selection
-# - Single-Line Mode
+# - Command to open default and user settings side-by-side
+# - Table formatting
 # - Idempotent first_line indent
+# - Don't remove empty new-lines at the beginning or the end
+#   of selection
+# - Single-line Mode
 # - Block-Characters Editor?
-# - Überschriften Erkennung?
 # 
 # -----------------------------------------------------------------
 

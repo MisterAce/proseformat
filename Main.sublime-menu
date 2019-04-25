@@ -16,6 +16,14 @@
                         "children":
                         [
                             {
+                                "caption": "Settings",
+                                "command": "edit_settings",
+                                "args": {
+                                    "base_file": "${packages}/ProseFormat/ProseFormat.sublime-settings",
+                                    "default": "{ }"
+                                }
+                            },
+                            {
                                 "caption": "Settings – Default",
                                 "command": "open_file",
                                 "args": {

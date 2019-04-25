@@ -9,10 +9,8 @@
 # Date:     2019-17-04
 #
 # TODO List
-# - Command to open default and user settings side-by-side
-# - Table formatting
 # - Idempotent first_line indent
-#   of selection
+# - Table formatting
 # - Single-line Mode
 # - Block-Characters Editor?
 # 

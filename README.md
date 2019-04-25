@@ -8,6 +8,8 @@ ProseFormat is a Sublime Text plugin that allows hard wrapping of prose text usi
 - Numbered lists
 - Automatic renumbering of level 1 numbered lists
 
+Note, that ProseFormat is designed to work on plain text files, only. That is, it does not recoginize mark-down characters or the like.
+
 ## Example
 
 The following example shows what ProseFormat can do for you. After editing, your prose text may look as fuzzy as this:

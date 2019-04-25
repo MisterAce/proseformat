@@ -88,7 +88,7 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
                 # Check whether this is the first numbered paragraph
                 # If so, save the number and increment it as long
                 # as the list goes
-                if renumber_lists:
+                if settings.get("renumber_lists"):
                     if not numbered_list_started:
                         numbered_list_started = True
                         numbered_list_counter = num_val(stripped_paragraph)

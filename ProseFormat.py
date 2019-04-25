@@ -1,6 +1,6 @@
 # ----------------------------------------------------------------
 # Program:  ProseFormat
-# Function: Sublime Text plugin to be able for format prose text. 
+# Function: Sublime Text plugin to format prose text. 
 #           Features include:
 #            - Word wrap paragraphs
 #            - Support list formatting
@@ -31,7 +31,7 @@ settings = ""
 # ----------------------------------------------
 class ProseFormatCommand(sublime_plugin.TextCommand):
     def run(self, edit, **args):
- 
+
         load_settings()        
 
         # Get the configuration from the args
@@ -59,14 +59,13 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
 
         # Iterate over each paragraph        
         paragraphs = re.split(settings.get("paragraphSeparator"), org_text)
-        numbered_list_started = False
-        numbered_list_counter = 1
+        numbered_list_counter = -1
         for paragraph in paragraphs:
             stripped_paragraph = paragraph.lstrip()
 
             # Toggle the numbered list flag
             if not starts_with_number(stripped_paragraph):
-                numbered_list_started = False
+                numbered_list_counter = -1
 
             # Determine type of paragraph
             if starts_with_bullet(stripped_paragraph):
@@ -78,20 +77,18 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
                 indent_filler = "".rjust(indent, " ")
             elif starts_with_number(stripped_paragraph):
                 # Numbered list
-                numbered_list_counter += 1
+                if numbered_list_counter == -1:
+                    # Initialize the list number for automatic renumbering
+                    numbered_list_counter = num_val(stripped_paragraph)
+                else:
+                    numbered_list_counter += 1
 
                 first_indent = len(paragraph) - len(stripped_paragraph)
                 first_indent_filler = "".rjust(first_indent, " ")
 
-                # Check whether this is the first numbered paragraph
-                # If so, save the number and increment it as long
-                # as the list goes
+                # Automatic renumbering fixing out-of-order list items
                 if settings.get("renumber_lists"):
-                    if not numbered_list_started:
-                        numbered_list_started = True
-                        numbered_list_counter = num_val(stripped_paragraph)
-                    else:
-                        stripped_paragraph = replace_num(stripped_paragraph, numbered_list_counter)                                
+                    stripped_paragraph = replace_num(stripped_paragraph, numbered_list_counter)                                
 
                 # Reserve space for digit number + separator + space
                 indent = first_indent + num_len(stripped_paragraph) + 2;
@@ -132,7 +129,7 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
             # The paragraph separator
             formatted_text += "\n"
 
-        # Alter buffer, omit last \n as it wasn't included in the region
+        # Alter buffer, omit last \n as we already printed it as last paragraph separator
         self.view.replace(edit, sel_region, formatted_text[:-1])
 
 

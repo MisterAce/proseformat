@@ -2,7 +2,7 @@
 
 ProseFormat is a Sublime Text 3 plugin that allows hard wrapping of prose text using a configurable width. The following features are supported:
 
-- Suported alignment: left-aligned, centered, right-aligned, justified
+- Supported alignment: left-aligned, centered, right-aligned, justified
 - Variable indent
 - Bulleted lists
 - Numbered lists
@@ -101,7 +101,9 @@ Numbered Lists
 
 ## Installation
 
-Currently, there is no installation package. To install this plugin manually, simply clone this repository to your sublime text packages folder, for example:
+Currently, there is no installation package. To install this plugin manually, download the latest release from https://github.com/MisterAce/proseformat/releases/ and extract the contents to a temporary directory. Copy the contents of the proseformat-x.x directory to `~/.config/sublime-text-3/Packages`
+
+Alternatively, simply clone this repository to the following directory:
 
 ```
 cd ~/.config/sublime-text-3/Packages

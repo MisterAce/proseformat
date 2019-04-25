@@ -4,7 +4,7 @@
 #           Features include:
 #            - Word wrap paragraphs
 #            - Support list formatting
-#            - Support different kinds of justification
+#            - Support different kinds of alignment
 # Author:   MisterAce
 # Date:     2019-17-04
 #
@@ -12,7 +12,6 @@
 # - Command to open default and user settings side-by-side
 # - Table formatting
 # - Idempotent first_line indent
-# - Don't remove empty new-lines at the beginning or the end
 #   of selection
 # - Single-line Mode
 # - Block-Characters Editor?
@@ -38,15 +37,20 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
         load_settings()        
 
         # Get the configuration from the args
-        if "justify" in args:
-            justification = args["justify"]
+        if "text-align" in args:
+            alignment = args["text-align"]
+
+        # And save some settings locally
         width = settings.get("width")
+        paragraph_indent = settings.get("paragraph_indent")
 
         # Get the current selection and expand it to full lines
         if len(self.view.sel()[0]) == 0:
             return
         sel_region = self.view.sel()[0]
-        sel_region = self.view.line(sel_region)
+        if self.view.classify(sel_region.end()) & sublime.CLASS_LINE_START != 0:
+            sel_region = sublime.Region(sel_region.begin(), sel_region.end() - 1)
+        sel_region = self.view.full_line(sel_region)
         self.view.sel().add(sel_region)
 
         # Get the currently selected text
@@ -57,17 +61,10 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
 
         # Iterate over each paragraph        
         paragraphs = re.split(settings.get("paragraphSeparator"), org_text)
-        first_paragraph = True
         numbered_list_started = False
         numbered_list_counter = 1
         for paragraph in paragraphs:
             stripped_paragraph = paragraph.lstrip()
-
-            # Care about paragraph separator new-line
-            if not first_paragraph:
-                formatted_text += "\n"
-            else:
-                first_paragraph = False
 
             # Toggle the numbered list flag
             if not starts_with_number(stripped_paragraph):
@@ -117,10 +114,7 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
             for word in words:
                 # Render a line when it's ready
                 if len(line) + len(word) >= width and len(line) > 0:
-                    if justify == 2:
-                        line = line.center(width)
-
-                    formatted_text += format_line(line, justification, width, False) + "\n"
+                    formatted_text += format_line(line, alignment, width, False)
                     line = ""
                     first_line = False;
 
@@ -135,27 +129,33 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
 
             # Print the "tail" line
             if len(line) > 0:
-                formatted_text += format_line(line, justification, width, True) + "\n"
+                formatted_text += format_line(line, alignment, width, True)
+
+            # The paragraph separator
+            formatted_text += "\n"
 
         # Alter buffer, omit last \n as it wasn't included in the region
         self.view.replace(edit, sel_region, formatted_text[:-1])
 
 
 # ----------------------------------------------
-# Format a line according to the justification 
+# Format a line according to the alignment 
 # settings
 # ----------------------------------------------
-def format_line(line, justification, width, is_last):
-    if justification == 1:
+def format_line(line, alignment, width, is_last):
+    if alignment == 1:
+        # right
         line = line.rjust(width)
-    elif justification == 2:
+    elif alignment == 2:
+        # center
         # TODO: This is rather a special case which should simply
         # center the selection line-by-line as is without word
         # wrapping
-        line = line.center(width)
-    elif justification == 3:
+        line = line.center(width).rstrip()
+    elif alignment == 3:
+        # justify
         if is_last:
-            return line
+            return line + "\n"
         start_index = len(line) - len(line.lstrip())
         if starts_with_bullet(line.strip()):
             start_index += 2
@@ -171,7 +171,7 @@ def format_line(line, justification, width, is_last):
                 continue
             line = line[:space_pos] + " " + line[space_pos:]
             current_index = space_pos + 2
-    return line
+    return line + "\n"
 
 
 # ----------------------------------------------

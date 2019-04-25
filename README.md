@@ -110,10 +110,10 @@ git clone https://github.com/MisterAce/proseformat.git ProseFormat
 
 In order to format a range of text, select the text in Sublime Text. Then, use one of the following default key-bindings to format the selected text:
 
-- `Ctrl+Alt+F, l`: Format the selected text left-justified
-- `Ctrl+Alt+F, b`: Format the selected text block
+- `Ctrl+Alt+F, l`: Format the selected text left aligned
+- `Ctrl+Alt+F, j`: Format the selected text justified
 - `Ctrl+Alt+F, c`: Format the selected text centered
-- `Ctrl+Alt+F, r`: Format the selected text right-justified
+- `Ctrl+Alt+F, r`: Format the selected text right aligned
 
 In order to vary the width, open the ProseFormat user settings (Menu: Preferences -> Package Settings -> ProseFormat -> User Settings) and add the following line:
 

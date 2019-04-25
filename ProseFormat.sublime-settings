@@ -4,7 +4,7 @@
     // The width of the target text
     "width": 70
 
-    // First line indent of a paragraph. TODO: Make this idenopotent
+    // First line indent of a paragraph. TODO: Make this idempotent
     ,"paragraph_indent": 0
 
     // Renumber numbered lists automatically?
@@ -16,7 +16,7 @@
     ,"paragraphSeparator": "\\n\\s*\\n"
 
     // A regexp describing| the supported list bullets
-    ,"bullets": "^\\*\\ |^\\-\\ |^o\\ "
+    ,"bullets": "^\\*\\s+|^\\-\\s+|^o\\s+"
 
     // A regexp describing a numbered list
     ,"listNumber": "^[0-9]+[.)]\\s+"

@@ -101,14 +101,14 @@ Numbered Lists
 
 ## Installation
 
-Currently, there is no installation package. To install this plugin manually, download the latest release from https://github.com/MisterAce/proseformat/releases/ and extract the contents to a temporary directory. Copy the contents of the proseformat-x.x directory to `~/.config/sublime-text-3/Packages`
+Currently, ProseFormat is not listed in the default Package Control repository. Thus, to install ProseFormat, you have to point package control to use the ProseFormat GitHub repositoriy, first. Take the following steps:
 
-Alternatively, simply clone this repository to the following directory:
-
-```
-cd ~/.config/sublime-text-3/Packages
-git clone https://github.com/MisterAce/proseformat.git ProseFormat --depth=1
-```
+1. Open Package Control by navigating to menu: Preferences -> Package Control
+2. Select "Add Repository"
+3. Enter the repository URL: https://github.com/MisterAce/proseformat
+4. Open Package Control again
+5. Select "Install Package"
+6. In the search field, type "proseformat", select it and hit enter to install it.
 
 ## Usage
 

@@ -151,8 +151,23 @@ ProseFormat supports formatting bulleted lists. That is, it ensures that the tex
 
 Note, that bulleted list items are also separated by an empty line.
 
+By default, the following bullet characters are supportd:
+
+```
+   - Bullet 1
+   * Bullet 2
+   o Bullet 3
+```
+
 ## Numbered Lists
 
 ProseFormat also lays out numbered list items to be left-aligned equally when it detects that a paragraph starts with a list number. When during editing a re-ordering of the numberd list-items took place, ProseFormat can renumber the items to be in ascending order, starting with the number of the first item of a list.
+
+Currently, the following numbered list formats are supported:
+
+```
+   1. Format 1
+   2) Format 2
+```
 
 

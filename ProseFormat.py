@@ -42,94 +42,97 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
         width = settings.get("width")
         paragraph_indent = settings.get("paragraph_indent")
 
-        # Get the current selection and expand it to full lines
-        if len(self.view.sel()[0]) == 0:
-            return
-        sel_region = self.view.sel()[0]
-        if self.view.classify(sel_region.end()) & sublime.CLASS_LINE_START != 0:
-            sel_region = sublime.Region(sel_region.begin(), sel_region.end() - 1)
-        sel_region = self.view.full_line(sel_region)
-        self.view.sel().add(sel_region)
+        # Iterate over all selected regions in the text
+        for sel_region in self.view.sel():
+            if len(sel_region) == 0:
+                contine
+            if self.view.classify(sel_region.end()) & sublime.CLASS_LINE_START != 0:
+                sel_region = sublime.Region(sel_region.begin(), sel_region.end() - 1)
+            sel_region = self.view.full_line(sel_region)
+            self.view.sel().add(sel_region)
 
-        # Get the currently selected text
-        org_text = self.view.substr(sel_region)
+            # Get the currently selected text
+            org_text = self.view.substr(sel_region)
 
-        # The result string
-        formatted_text = ""
+            # The result string
+            formatted_text = ""
 
-        # Iterate over each paragraph        
-        paragraphs = re.split(settings.get("paragraphSeparator"), org_text)
-        numbered_list_counter = -1
-        for paragraph in paragraphs:
-            stripped_paragraph = paragraph.lstrip()
+            # Iterate over each paragraph        
+            paragraphs = re.split(settings.get("paragraphSeparator"), org_text)
+            numbered_list_counter = -1
 
-            # Toggle the numbered list flag
-            if not starts_with_number(stripped_paragraph):
-                numbered_list_counter = -1
+            paragraphs_iter = iter(paragraphs)
 
-            # Determine type of paragraph
-            if starts_with_bullet(stripped_paragraph):
-                # Bulleted list
-                first_indent = len(paragraph) - len(stripped_paragraph)
-                first_indent_filler = "".rjust(first_indent, " ")
+            for paragraph in paragraphs:
+                stripped_paragraph = paragraph.lstrip()
 
-                indent = first_indent + 2;
-                indent_filler = "".rjust(indent, " ")
-            elif starts_with_number(stripped_paragraph):
-                # Numbered list
-                if numbered_list_counter == -1:
-                    # Initialize the list number for automatic renumbering
-                    numbered_list_counter = num_val(stripped_paragraph)
-                else:
-                    numbered_list_counter += 1
+                # Toggle the numbered list flag
+                if not starts_with_number(stripped_paragraph):
+                    numbered_list_counter = -1
 
-                first_indent = len(paragraph) - len(stripped_paragraph)
-                first_indent_filler = "".rjust(first_indent, " ")
+                # Determine type of paragraph
+                if starts_with_bullet(stripped_paragraph):
+                    # Bulleted list
+                    first_indent = len(paragraph) - len(stripped_paragraph)
+                    first_indent_filler = "".rjust(first_indent, " ")
 
-                # Automatic renumbering fixing out-of-order list items
-                if settings.get("renumber_lists"):
-                    stripped_paragraph = replace_num(stripped_paragraph, numbered_list_counter)                                
-
-                # Reserve space for digit number + separator + space
-                indent = first_indent + num_len(stripped_paragraph) + 2;
-                indent_filler = "".rjust(indent, " ")
-            else:
-                # Normal paragraph
-                indent = len(paragraph) - len(stripped_paragraph)
-                indent_filler = "".rjust(indent, " ")
-
-                first_indent = indent + paragraph_indent
-                first_indent_filler = "".rjust(first_indent, " ")
-
-            # Render the paragraph
-            words = stripped_paragraph.split()
-            first_line = True
-            line = ""
-            for word in words:
-                # Render a line when it's ready
-                if len(line) + len(word) >= width and len(line) > 0:
-                    formatted_text += format_line(line, alignment, width, False)
-                    line = ""
-                    first_line = False;
-
-                # Keep feeding a line
-                if len(line) == 0:
-                    if first_line:
-                        line += first_indent_filler + word                    
+                    indent = first_indent + 2;
+                    indent_filler = "".rjust(indent, " ")
+                elif starts_with_number(stripped_paragraph):
+                    # Numbered list
+                    if numbered_list_counter == -1:
+                        # Initialize the list number for automatic renumbering
+                        numbered_list_counter = num_val(stripped_paragraph)
                     else:
-                        line += indent_filler + word                    
+                        numbered_list_counter += 1
+
+                    first_indent = len(paragraph) - len(stripped_paragraph)
+                    first_indent_filler = "".rjust(first_indent, " ")
+
+                    # Automatic renumbering fixing out-of-order list items
+                    if settings.get("renumber_lists"):
+                        stripped_paragraph = replace_num(stripped_paragraph, numbered_list_counter)                                
+
+                    # Reserve space for digit number + separator + space
+                    indent = first_indent + num_len(stripped_paragraph) + 2;
+                    indent_filler = "".rjust(indent, " ")
                 else:
-                    line += " " + word
+                    # Normal paragraph
+                    indent = len(paragraph) - len(stripped_paragraph)
+                    indent_filler = "".rjust(indent, " ")
 
-            # Print the "tail" line
-            if len(line) > 0:
-                formatted_text += format_line(line, alignment, width, True)
+                    first_indent = indent + paragraph_indent
+                    first_indent_filler = "".rjust(first_indent, " ")
 
-            # The paragraph separator
-            formatted_text += "\n"
+                # Render the paragraph
+                words = stripped_paragraph.split()
+                first_line = True
+                line = ""
+                for word in words:
+                    # Render a line when it's ready
+                    if len(line) + len(word) >= width and len(line) > 0:
+                        formatted_text += format_line(line, alignment, width, False)
+                        line = ""
+                        first_line = False;
 
-        # Alter buffer, omit last \n as we already printed it as last paragraph separator
-        self.view.replace(edit, sel_region, formatted_text[:-1])
+                    # Keep feeding a line
+                    if len(line) == 0:
+                        if first_line:
+                            line += first_indent_filler + word                    
+                        else:
+                            line += indent_filler + word                    
+                    else:
+                        line += " " + word
+
+                # Print the "tail" line
+                if len(line) > 0:
+                    formatted_text += format_line(line, alignment, width, True)
+
+                # The paragraph separator
+                formatted_text += "\n"
+
+            # Alter buffer, omit last \n as we already printed it as last paragraph separator
+            self.view.replace(edit, sel_region, formatted_text[:-1])
 
 
 # ----------------------------------------------

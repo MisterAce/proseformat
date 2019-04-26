@@ -93,7 +93,6 @@ class ProseFormatCommand(sublime_plugin.TextCommand):
                 # Reserve space for digit number + separator + space
                 indent = first_indent + num_len(stripped_paragraph) + 2;
                 indent_filler = "".rjust(indent, " ")
-
             else:
                 # Normal paragraph
                 indent = len(paragraph) - len(stripped_paragraph)
@@ -147,10 +146,8 @@ def format_line(line, alignment, width, is_last):
         # center the selection line-by-line as is without word
         # wrapping
         line = line.center(width).rstrip()
-    elif alignment == 3:
+    elif alignment == 3 and not is_last:
         # justify
-        if is_last:
-            return line + "\n"
         start_index = len(line) - len(line.lstrip())
         if starts_with_bullet(line.strip()):
             start_index += 2
@@ -170,7 +167,7 @@ def format_line(line, alignment, width, is_last):
 
 
 # ----------------------------------------------
-# Returns True when a string starts witha list
+# Returns True when a string starts with a list
 # bullet.
 # ----------------------------------------------
 def starts_with_bullet(val):

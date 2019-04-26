@@ -1,0 +1,13 @@
+{
+  "name": "ProseFormat",
+  "description": "Formats plain text files containing prose text",
+  "author": "Mister Ace",
+  "details": "https://github.com/MisterAce/ProseFormat",
+  "labels": [ "prose", "text", "ormatting", "hard wrap" ],
+  "releases": [
+    {
+      "details": "https://github.com/MisterAce/ProseFormat/tags",
+      "sublime_text": ">=3000"
+    }
+  ]
+}
